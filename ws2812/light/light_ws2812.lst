@@ -1,0 +1,224 @@
+   1               		.file	"light_ws2812.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               	.global	ws2812_sendarray_mask
+  18               	ws2812_sendarray_mask:
+  19               	.LFB10:
+  20               	.LM1:
+  21               	.LVL0:
+  22               	/* prologue: function */
+  23               	/* frame size = 0 */
+  24 0000 FC01      		movw r30,r24
+  25               	.LM2:
+  26 0002 87B3      		in r24,55-32
+  27               	.LVL1:
+  28 0004 842B      		or r24,r20
+  29 0006 87BB      		out 55-32,r24
+  30               	.LM3:
+  31 0008 88B3      		in r24,56-32
+  32 000a 242F      		mov r18,r20
+  33               	.LVL2:
+  34 000c 2095      		com r18
+  35 000e 2823      		and r18,r24
+  36               	.LM4:
+  37 0010 98B3      		in r25,56-32
+  38               	.LVL3:
+  39 0012 942B      		or r25,r20
+  40               	.LM5:
+  41 0014 3FB7      		in r19,__SREG__
+  42               	.LVL4:
+  43               	.LM6:
+  44               	/* #APP */
+  45               	 ;  114 "ws2812/light/light_ws2812.c" 1
+  46 0016 F894      		cli
+  47               	 ;  0 "" 2
+  48               	/* #NOAPP */
+  49 0018 00C0      		rjmp .L2
+  50               	.LVL5:
+  51               	.L3:
+  52               	.LM7:
+  53 001a 8191      		ld r24,Z+
+  54               	.LM8:
+  55               	/* #APP */
+  56               	 ;  119 "ws2812/light/light_ws2812.c" 1
+  57 001c 48E0      		       ldi   r20,8  
+  58               		loop31:            
+  59 001e 98BB      		       out   24,r25 
+  60 0020 0000      		nop      
+  61 0022 87FF      		       sbrs  r24,7  
+  62 0024 28BB      		       out   24,r18 
+  63 0026 880F      		       lsl   r24    
+  64 0028 00C0      		rjmp .+0 
+  65 002a 00C0      		rjmp .+0 
+  66 002c 28BB      		       out   24,r18 
+  67 002e 0000      		nop      
+  68 0030 00C0      		rjmp .+0 
+  69 0032 00C0      		rjmp .+0 
+  70 0034 00C0      		rjmp .+0 
+  71 0036 00C0      		rjmp .+0 
+  72 0038 00C0      		rjmp .+0 
+  73 003a 00C0      		rjmp .+0 
+  74 003c 00C0      		rjmp .+0 
+  75 003e 00C0      		rjmp .+0 
+  76 0040 00C0      		rjmp .+0 
+  77 0042 00C0      		rjmp .+0 
+  78 0044 00C0      		rjmp .+0 
+  79 0046 00C0      		rjmp .+0 
+  80 0048 00C0      		rjmp .+0 
+  81 004a 00C0      		rjmp .+0 
+  82 004c 00C0      		rjmp .+0 
+  83 004e 4A95      		       dec   r20    
+  84 0050 01F4      		       brne  loop31
+  85               		
+  86               	 ;  0 "" 2
+  87               	/* #NOAPP */
+  88 0052 6150      		subi r22,lo8(-(-1))
+  89 0054 7040      		sbci r23,hi8(-(-1))
+  90               	.L2:
+  91               	.LM9:
+  92 0056 6115      		cp r22,__zero_reg__
+  93 0058 7105      		cpc r23,__zero_reg__
+  94 005a 01F0      		breq .+2
+  95 005c 00C0      		rjmp .L3
+  96               	.LM10:
+  97 005e 3FBF      		out __SREG__,r19
+  98               	/* epilogue start */
+  99               	.LM11:
+ 100 0060 0895      		ret
+ 101               	.LFE10:
+ 103               	.global	ws2812_sendarray
+ 105               	ws2812_sendarray:
+ 106               	.LFB9:
+ 107               	.LM12:
+ 108               	.LVL6:
+ 109               	/* prologue: function */
+ 110               	/* frame size = 0 */
+ 111               	.LM13:
+ 112 0062 42E0      		ldi r20,lo8(2)
+ 113 0064 00D0      		rcall ws2812_sendarray_mask
+ 114               	.LVL7:
+ 115               	/* epilogue start */
+ 116               	.LM14:
+ 117 0066 0895      		ret
+ 118               	.LFE9:
+ 120               	.global	ws2812_setleds_rgbw
+ 122               	ws2812_setleds_rgbw:
+ 123               	.LFB8:
+ 124               	.LM15:
+ 125               	.LVL8:
+ 126               	/* prologue: function */
+ 127               	/* frame size = 0 */
+ 128               	.LM16:
+ 129 0068 660F      		lsl r22
+ 130 006a 771F      		rol r23
+ 131 006c 660F      		lsl r22
+ 132 006e 771F      		rol r23
+ 133               	.LVL9:
+ 134 0070 42E0      		ldi r20,lo8(2)
+ 135 0072 00D0      		rcall ws2812_sendarray_mask
+ 136               	.LVL10:
+ 137               	.LBB34:
+ 138               	.LBB35:
+ 139               	.LBB36:
+ 140               	.LBB37:
+ 141               	.LBB38:
+ 142               	.LBB39:
+ 143               	.LM17:
+ 144 0074 80EC      		ldi r24,lo8(192)
+ 145 0076 90E0      		ldi r25,hi8(192)
+ 146               	.LVL11:
+ 147               	/* #APP */
+ 148               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 149 0078 0197      		1: sbiw r24,1
+ 150 007a 01F4      		brne 1b
+ 151               	 ;  0 "" 2
+ 152               	/* epilogue start */
+ 153               	/* #NOAPP */
+ 154               	.LBE39:
+ 155               	.LBE38:
+ 156               	.LBE37:
+ 157               	.LBE36:
+ 158               	.LBE35:
+ 159               	.LBE34:
+ 160               	.LM18:
+ 161 007c 0895      		ret
+ 162               	.LFE8:
+ 164               	.global	ws2812_setleds_pin
+ 166               	ws2812_setleds_pin:
+ 167               	.LFB7:
+ 168               	.LM19:
+ 169               	.LVL12:
+ 170               	/* prologue: function */
+ 171               	/* frame size = 0 */
+ 172 007e 9C01      		movw r18,r24
+ 173 0080 CB01      		movw r24,r22
+ 174               	.LVL13:
+ 175               	.LM20:
+ 176 0082 63E0      		ldi r22,lo8(3)
+ 177 0084 70E0      		ldi r23,hi8(3)
+ 178               	.LVL14:
+ 179 0086 00D0      		rcall __mulhi3
+ 180               	.LVL15:
+ 181 0088 BC01      		movw r22,r24
+ 182 008a C901      		movw r24,r18
+ 183 008c 00D0      		rcall ws2812_sendarray_mask
+ 184               	.LVL16:
+ 185               	.LBB40:
+ 186               	.LBB41:
+ 187               	.LBB42:
+ 188               	.LBB43:
+ 189               	.LM21:
+ 190 008e 80EA      		ldi r24,lo8(-96)
+ 191               	.LVL17:
+ 192               	/* #APP */
+ 193               	 ;  83 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 194 0090 8A95      		1: dec r24
+ 195 0092 01F4      		brne 1b
+ 196               	 ;  0 "" 2
+ 197               	/* epilogue start */
+ 198               	/* #NOAPP */
+ 199               	.LBE43:
+ 200               	.LBE42:
+ 201               	.LBE41:
+ 202               	.LBE40:
+ 203               	.LM22:
+ 204 0094 0895      		ret
+ 205               	.LFE7:
+ 207               	.global	ws2812_setleds
+ 209               	ws2812_setleds:
+ 210               	.LFB6:
+ 211               	.LM23:
+ 212               	.LVL18:
+ 213               	/* prologue: function */
+ 214               	/* frame size = 0 */
+ 215               	.LM24:
+ 216 0096 42E0      		ldi r20,lo8(2)
+ 217 0098 00D0      		rcall ws2812_setleds_pin
+ 218               	.LVL19:
+ 219               	/* epilogue start */
+ 220               	.LM25:
+ 221 009a 0895      		ret
+ 222               	.LFE6:
+ 280               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 light_ws2812.c
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:2      *ABS*:0000003f __SREG__
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:3      *ABS*:0000003e __SP_H__
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:4      *ABS*:0000003d __SP_L__
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:5      *ABS*:00000034 __CCP__
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:18     .text:00000000 ws2812_sendarray_mask
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:58     .text:0000001e loop31
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:105    .text:00000062 ws2812_sendarray
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:122    .text:00000068 ws2812_setleds_rgbw
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:166    .text:0000007e ws2812_setleds_pin
+C:\Users\Johannes\AppData\Local\Temp/ccPsi5Xr.s:209    .text:00000096 ws2812_setleds
+
+UNDEFINED SYMBOLS
+__mulhi3

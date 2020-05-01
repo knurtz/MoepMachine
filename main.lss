@@ -1,0 +1,501 @@
+
+main.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000025a  00000000  00000000  00000094  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  0000025a  000002ee  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000018  00800060  00800060  000002ee  2**0
+                  ALLOC
+  3 .comment      00000011  00000000  00000000  000002ee  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000300  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000048  00000000  00000000  0000033c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_pubnames 00000083  00000000  00000000  00000384  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_info   000008e7  00000000  00000000  00000407  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_abbrev 000002db  00000000  00000000  00000cee  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_line   0000031a  00000000  00000000  00000fc9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_frame  000000f8  00000000  00000000  000012e4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_str    00000345  00000000  00000000  000013dc  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_loc    00000189  00000000  00000000  00001721  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_ranges 00000018  00000000  00000000  000018aa  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	16 c0       	rjmp	.+44     	; 0x30 <__bad_interrupt>
+   4:	15 c0       	rjmp	.+42     	; 0x30 <__bad_interrupt>
+   6:	14 c0       	rjmp	.+40     	; 0x30 <__bad_interrupt>
+   8:	13 c0       	rjmp	.+38     	; 0x30 <__bad_interrupt>
+   a:	12 c0       	rjmp	.+36     	; 0x30 <__bad_interrupt>
+   c:	11 c0       	rjmp	.+34     	; 0x30 <__bad_interrupt>
+   e:	10 c0       	rjmp	.+32     	; 0x30 <__bad_interrupt>
+  10:	0f c0       	rjmp	.+30     	; 0x30 <__bad_interrupt>
+  12:	0e c0       	rjmp	.+28     	; 0x30 <__bad_interrupt>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+
+0000001c <__do_clear_bss>:
+  1c:	20 e0       	ldi	r18, 0x00	; 0
+  1e:	a0 e6       	ldi	r26, 0x60	; 96
+  20:	b0 e0       	ldi	r27, 0x00	; 0
+  22:	01 c0       	rjmp	.+2      	; 0x26 <.do_clear_bss_start>
+
+00000024 <.do_clear_bss_loop>:
+  24:	1d 92       	st	X+, r1
+
+00000026 <.do_clear_bss_start>:
+  26:	a8 37       	cpi	r26, 0x78	; 120
+  28:	b2 07       	cpc	r27, r18
+  2a:	e1 f7       	brne	.-8      	; 0x24 <.do_clear_bss_loop>
+  2c:	d9 d0       	rcall	.+434    	; 0x1e0 <main>
+  2e:	13 c1       	rjmp	.+550    	; 0x256 <_exit>
+
+00000030 <__bad_interrupt>:
+  30:	e7 cf       	rjmp	.-50     	; 0x0 <__vectors>
+
+00000032 <clearFrame>:
+*/
+
+struct cRGB ledFrame[NUM_LEDS];
+
+
+void clearFrame() {
+  32:	80 e0       	ldi	r24, 0x00	; 0
+  34:	90 e0       	ldi	r25, 0x00	; 0
+  36:	fc 01       	movw	r30, r24
+  38:	e0 5a       	subi	r30, 0xA0	; 160
+  3a:	ff 4f       	sbci	r31, 0xFF	; 255
+	for (int i = 0; i < NUM_LEDS; i++) ledFrame[i].r = ledFrame[i].g = ledFrame[i].b = 0;
+  3c:	12 82       	std	Z+2, r1	; 0x02
+  3e:	10 82       	st	Z, r1
+  40:	11 82       	std	Z+1, r1	; 0x01
+  42:	03 96       	adiw	r24, 0x03	; 3
+  44:	88 31       	cpi	r24, 0x18	; 24
+  46:	91 05       	cpc	r25, r1
+  48:	b1 f7       	brne	.-20     	; 0x36 <__CCP__+0x2>
+}
+  4a:	08 95       	ret
+
+0000004c <playStartAnimation>:
+
+
+void playStartAnimation() {
+  4c:	1f 93       	push	r17
+  4e:	cf 93       	push	r28
+  50:	df 93       	push	r29
+	
+	//frame 1: bottom red
+	ledFrame[2].r = ledFrame[3].r = 50;
+  52:	c0 e6       	ldi	r28, 0x60	; 96
+  54:	d0 e0       	ldi	r29, 0x00	; 0
+  56:	12 e3       	ldi	r17, 0x32	; 50
+  58:	1a 87       	std	Y+10, r17	; 0x0a
+  5a:	1f 83       	std	Y+7, r17	; 0x07
+	
+	ws2812_setleds(ledFrame, NUM_LEDS);
+  5c:	68 e0       	ldi	r22, 0x08	; 8
+  5e:	70 e0       	ldi	r23, 0x00	; 0
+  60:	ce 01       	movw	r24, r28
+  62:	bb d0       	rcall	.+374    	; 0x1da <ws2812_setleds>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  64:	2f ef       	ldi	r18, 0xFF	; 255
+  66:	85 ea       	ldi	r24, 0xA5	; 165
+  68:	9e e0       	ldi	r25, 0x0E	; 14
+  6a:	21 50       	subi	r18, 0x01	; 1
+  6c:	80 40       	sbci	r24, 0x00	; 0
+  6e:	90 40       	sbci	r25, 0x00	; 0
+  70:	e1 f7       	brne	.-8      	; 0x6a <playStartAnimation+0x1e>
+  72:	00 c0       	rjmp	.+0      	; 0x74 <playStartAnimation+0x28>
+  74:	00 00       	nop
+	_delay_ms(500);
+	
+	//frame2: bottom yellow, middle red
+	ledFrame[1].r = ledFrame[4].r = 50;
+  76:	1d 87       	std	Y+13, r17	; 0x0d
+  78:	1c 83       	std	Y+4, r17	; 0x04
+	ledFrame[2].g = ledFrame[3].g = 50;
+  7a:	19 87       	std	Y+9, r17	; 0x09
+  7c:	1e 83       	std	Y+6, r17	; 0x06
+	
+	ws2812_setleds(ledFrame, NUM_LEDS);
+  7e:	68 e0       	ldi	r22, 0x08	; 8
+  80:	70 e0       	ldi	r23, 0x00	; 0
+  82:	ce 01       	movw	r24, r28
+  84:	aa d0       	rcall	.+340    	; 0x1da <ws2812_setleds>
+  86:	2f ef       	ldi	r18, 0xFF	; 255
+  88:	85 ea       	ldi	r24, 0xA5	; 165
+  8a:	9e e0       	ldi	r25, 0x0E	; 14
+  8c:	21 50       	subi	r18, 0x01	; 1
+  8e:	80 40       	sbci	r24, 0x00	; 0
+  90:	90 40       	sbci	r25, 0x00	; 0
+  92:	e1 f7       	brne	.-8      	; 0x8c <playStartAnimation+0x40>
+  94:	00 c0       	rjmp	.+0      	; 0x96 <playStartAnimation+0x4a>
+  96:	00 00       	nop
+	_delay_ms(500);
+	
+	//frame3: bottom green, middle yellow, top red
+	ledFrame[0].r = ledFrame[5].r = 50;
+  98:	18 8b       	std	Y+16, r17	; 0x10
+  9a:	19 83       	std	Y+1, r17	; 0x01
+	ledFrame[1].g = ledFrame[4].g = 50;
+  9c:	1c 87       	std	Y+12, r17	; 0x0c
+  9e:	1b 83       	std	Y+3, r17	; 0x03
+	ledFrame[2].r = ledFrame[3].r = 0;
+  a0:	1a 86       	std	Y+10, r1	; 0x0a
+  a2:	1f 82       	std	Y+7, r1	; 0x07
+	
+	ws2812_setleds(ledFrame, NUM_LEDS);
+  a4:	68 e0       	ldi	r22, 0x08	; 8
+  a6:	70 e0       	ldi	r23, 0x00	; 0
+  a8:	ce 01       	movw	r24, r28
+  aa:	97 d0       	rcall	.+302    	; 0x1da <ws2812_setleds>
+  ac:	2f ef       	ldi	r18, 0xFF	; 255
+  ae:	8b e4       	ldi	r24, 0x4B	; 75
+  b0:	9d e1       	ldi	r25, 0x1D	; 29
+  b2:	21 50       	subi	r18, 0x01	; 1
+  b4:	80 40       	sbci	r24, 0x00	; 0
+  b6:	90 40       	sbci	r25, 0x00	; 0
+  b8:	e1 f7       	brne	.-8      	; 0xb2 <__stack+0x13>
+  ba:	00 c0       	rjmp	.+0      	; 0xbc <__stack+0x1d>
+  bc:	00 00       	nop
+	_delay_ms(1000);
+	
+	//frame4: same as frame3, but text blue
+	ledFrame[6].b = ledFrame[7].b = 250;
+  be:	8a ef       	ldi	r24, 0xFA	; 250
+  c0:	8f 8b       	std	Y+23, r24	; 0x17
+  c2:	8c 8b       	std	Y+20, r24	; 0x14
+	
+	ws2812_setleds(ledFrame, NUM_LEDS);
+  c4:	68 e0       	ldi	r22, 0x08	; 8
+  c6:	70 e0       	ldi	r23, 0x00	; 0
+  c8:	ce 01       	movw	r24, r28
+
+}
+  ca:	df 91       	pop	r29
+  cc:	cf 91       	pop	r28
+  ce:	1f 91       	pop	r17
+	_delay_ms(1000);
+	
+	//frame4: same as frame3, but text blue
+	ledFrame[6].b = ledFrame[7].b = 250;
+	
+	ws2812_setleds(ledFrame, NUM_LEDS);
+  d0:	84 c0       	rjmp	.+264    	; 0x1da <ws2812_setleds>
+
+000000d2 <pulseVibration>:
+}
+
+
+void pulseVibration() {
+
+	PORTB |= (1<<PORTB4);
+  d2:	c4 9a       	sbi	0x18, 4	; 24
+  d4:	2f ef       	ldi	r18, 0xFF	; 255
+  d6:	8b ed       	ldi	r24, 0xDB	; 219
+  d8:	95 e0       	ldi	r25, 0x05	; 5
+  da:	21 50       	subi	r18, 0x01	; 1
+  dc:	80 40       	sbci	r24, 0x00	; 0
+  de:	90 40       	sbci	r25, 0x00	; 0
+  e0:	e1 f7       	brne	.-8      	; 0xda <pulseVibration+0x8>
+  e2:	00 c0       	rjmp	.+0      	; 0xe4 <pulseVibration+0x12>
+  e4:	00 00       	nop
+	
+	_delay_ms(200);
+	
+	PORTB &= ~(1<<PORTB4);
+  e6:	c4 98       	cbi	0x18, 4	; 24
+  e8:	08 95       	ret
+
+000000ea <pulseVibrationShort>:
+
+}
+
+void pulseVibrationShort() {
+
+	PORTB |= (1<<PORTB4);
+  ea:	c4 9a       	sbi	0x18, 4	; 24
+  ec:	2f ef       	ldi	r18, 0xFF	; 255
+  ee:	8d ee       	ldi	r24, 0xED	; 237
+  f0:	92 e0       	ldi	r25, 0x02	; 2
+  f2:	21 50       	subi	r18, 0x01	; 1
+  f4:	80 40       	sbci	r24, 0x00	; 0
+  f6:	90 40       	sbci	r25, 0x00	; 0
+  f8:	e1 f7       	brne	.-8      	; 0xf2 <pulseVibrationShort+0x8>
+  fa:	00 c0       	rjmp	.+0      	; 0xfc <pulseVibrationShort+0x12>
+  fc:	00 00       	nop
+	
+	_delay_ms(100);
+	
+	PORTB &= ~(1<<PORTB4);
+  fe:	c4 98       	cbi	0x18, 4	; 24
+ 100:	08 95       	ret
+
+00000102 <turnOff>:
+}
+
+
+void turnOff() {
+
+	PORTB |= (1<<PORTB3);
+ 102:	c3 9a       	sbi	0x18, 3	; 24
+ 104:	2f ef       	ldi	r18, 0xFF	; 255
+ 106:	82 e5       	ldi	r24, 0x52	; 82
+ 108:	97 e0       	ldi	r25, 0x07	; 7
+ 10a:	21 50       	subi	r18, 0x01	; 1
+ 10c:	80 40       	sbci	r24, 0x00	; 0
+ 10e:	90 40       	sbci	r25, 0x00	; 0
+ 110:	e1 f7       	brne	.-8      	; 0x10a <turnOff+0x8>
+ 112:	00 c0       	rjmp	.+0      	; 0x114 <turnOff+0x12>
+ 114:	00 00       	nop
+	
+	//we should never reach this point in the real application because device should be turned off  now!
+	_delay_ms(250);
+	
+	PORTB &= ~(1<<PORTB3);
+ 116:	c3 98       	cbi	0x18, 3	; 24
+ 118:	08 95       	ret
+
+0000011a <flashWarning>:
+}
+
+void flashWarning() {
+
+	
+	PORTB |= (1<<PORTB4);
+ 11a:	c4 9a       	sbi	0x18, 4	; 24
+ 11c:	2f ef       	ldi	r18, 0xFF	; 255
+ 11e:	85 ea       	ldi	r24, 0xA5	; 165
+ 120:	9e e0       	ldi	r25, 0x0E	; 14
+ 122:	21 50       	subi	r18, 0x01	; 1
+ 124:	80 40       	sbci	r24, 0x00	; 0
+ 126:	90 40       	sbci	r25, 0x00	; 0
+ 128:	e1 f7       	brne	.-8      	; 0x122 <flashWarning+0x8>
+ 12a:	00 c0       	rjmp	.+0      	; 0x12c <flashWarning+0x12>
+ 12c:	00 00       	nop
+	
+	_delay_ms(500);
+	
+	PORTB &= ~(1<<PORTB4);
+ 12e:	c4 98       	cbi	0x18, 4	; 24
+ 130:	2f ef       	ldi	r18, 0xFF	; 255
+ 132:	85 ea       	ldi	r24, 0xA5	; 165
+ 134:	9e e0       	ldi	r25, 0x0E	; 14
+ 136:	21 50       	subi	r18, 0x01	; 1
+ 138:	80 40       	sbci	r24, 0x00	; 0
+ 13a:	90 40       	sbci	r25, 0x00	; 0
+ 13c:	e1 f7       	brne	.-8      	; 0x136 <flashWarning+0x1c>
+ 13e:	00 c0       	rjmp	.+0      	; 0x140 <flashWarning+0x26>
+ 140:	00 00       	nop
+ 142:	08 95       	ret
+
+00000144 <ws2812_sendarray_mask>:
+ 144:	fc 01       	movw	r30, r24
+ 146:	87 b3       	in	r24, 0x17	; 23
+ 148:	84 2b       	or	r24, r20
+ 14a:	87 bb       	out	0x17, r24	; 23
+ 14c:	88 b3       	in	r24, 0x18	; 24
+ 14e:	24 2f       	mov	r18, r20
+ 150:	20 95       	com	r18
+ 152:	28 23       	and	r18, r24
+ 154:	98 b3       	in	r25, 0x18	; 24
+ 156:	94 2b       	or	r25, r20
+ 158:	3f b7       	in	r19, 0x3f	; 63
+ 15a:	f8 94       	cli
+ 15c:	1e c0       	rjmp	.+60     	; 0x19a <loop31+0x38>
+ 15e:	81 91       	ld	r24, Z+
+ 160:	48 e0       	ldi	r20, 0x08	; 8
+
+00000162 <loop31>:
+ 162:	98 bb       	out	0x18, r25	; 24
+ 164:	00 00       	nop
+ 166:	87 ff       	sbrs	r24, 7
+ 168:	28 bb       	out	0x18, r18	; 24
+ 16a:	88 0f       	add	r24, r24
+ 16c:	00 c0       	rjmp	.+0      	; 0x16e <loop31+0xc>
+ 16e:	00 c0       	rjmp	.+0      	; 0x170 <loop31+0xe>
+ 170:	28 bb       	out	0x18, r18	; 24
+ 172:	00 00       	nop
+ 174:	00 c0       	rjmp	.+0      	; 0x176 <loop31+0x14>
+ 176:	00 c0       	rjmp	.+0      	; 0x178 <loop31+0x16>
+ 178:	00 c0       	rjmp	.+0      	; 0x17a <loop31+0x18>
+ 17a:	00 c0       	rjmp	.+0      	; 0x17c <loop31+0x1a>
+ 17c:	00 c0       	rjmp	.+0      	; 0x17e <loop31+0x1c>
+ 17e:	00 c0       	rjmp	.+0      	; 0x180 <loop31+0x1e>
+ 180:	00 c0       	rjmp	.+0      	; 0x182 <loop31+0x20>
+ 182:	00 c0       	rjmp	.+0      	; 0x184 <loop31+0x22>
+ 184:	00 c0       	rjmp	.+0      	; 0x186 <loop31+0x24>
+ 186:	00 c0       	rjmp	.+0      	; 0x188 <loop31+0x26>
+ 188:	00 c0       	rjmp	.+0      	; 0x18a <loop31+0x28>
+ 18a:	00 c0       	rjmp	.+0      	; 0x18c <loop31+0x2a>
+ 18c:	00 c0       	rjmp	.+0      	; 0x18e <loop31+0x2c>
+ 18e:	00 c0       	rjmp	.+0      	; 0x190 <loop31+0x2e>
+ 190:	00 c0       	rjmp	.+0      	; 0x192 <loop31+0x30>
+ 192:	4a 95       	dec	r20
+ 194:	31 f7       	brne	.-52     	; 0x162 <loop31>
+ 196:	61 50       	subi	r22, 0x01	; 1
+ 198:	70 40       	sbci	r23, 0x00	; 0
+ 19a:	61 15       	cp	r22, r1
+ 19c:	71 05       	cpc	r23, r1
+ 19e:	09 f0       	breq	.+2      	; 0x1a2 <loop31+0x40>
+ 1a0:	de cf       	rjmp	.-68     	; 0x15e <ws2812_sendarray_mask+0x1a>
+ 1a2:	3f bf       	out	0x3f, r19	; 63
+ 1a4:	08 95       	ret
+
+000001a6 <ws2812_sendarray>:
+ 1a6:	42 e0       	ldi	r20, 0x02	; 2
+ 1a8:	cd df       	rcall	.-102    	; 0x144 <ws2812_sendarray_mask>
+ 1aa:	08 95       	ret
+
+000001ac <ws2812_setleds_rgbw>:
+ 1ac:	66 0f       	add	r22, r22
+ 1ae:	77 1f       	adc	r23, r23
+ 1b0:	66 0f       	add	r22, r22
+ 1b2:	77 1f       	adc	r23, r23
+ 1b4:	42 e0       	ldi	r20, 0x02	; 2
+ 1b6:	c6 df       	rcall	.-116    	; 0x144 <ws2812_sendarray_mask>
+ 1b8:	80 ec       	ldi	r24, 0xC0	; 192
+ 1ba:	90 e0       	ldi	r25, 0x00	; 0
+ 1bc:	01 97       	sbiw	r24, 0x01	; 1
+ 1be:	f1 f7       	brne	.-4      	; 0x1bc <ws2812_setleds_rgbw+0x10>
+ 1c0:	08 95       	ret
+
+000001c2 <ws2812_setleds_pin>:
+ 1c2:	9c 01       	movw	r18, r24
+ 1c4:	cb 01       	movw	r24, r22
+ 1c6:	63 e0       	ldi	r22, 0x03	; 3
+ 1c8:	70 e0       	ldi	r23, 0x00	; 0
+ 1ca:	34 d0       	rcall	.+104    	; 0x234 <__mulhi3>
+ 1cc:	bc 01       	movw	r22, r24
+ 1ce:	c9 01       	movw	r24, r18
+ 1d0:	b9 df       	rcall	.-142    	; 0x144 <ws2812_sendarray_mask>
+ 1d2:	80 ea       	ldi	r24, 0xA0	; 160
+ 1d4:	8a 95       	dec	r24
+ 1d6:	f1 f7       	brne	.-4      	; 0x1d4 <ws2812_setleds_pin+0x12>
+ 1d8:	08 95       	ret
+
+000001da <ws2812_setleds>:
+ 1da:	42 e0       	ldi	r20, 0x02	; 2
+ 1dc:	f2 df       	rcall	.-28     	; 0x1c2 <ws2812_setleds_pin>
+ 1de:	08 95       	ret
+
+000001e0 <main>:
+
+int main(void)
+{
+
+	//set b3 and b4 as outputs (mosfets)
+	DDRB |= (1<<DDB3 | 1<<DDB4);
+ 1e0:	87 b3       	in	r24, 0x17	; 23
+ 1e2:	88 61       	ori	r24, 0x18	; 24
+ 1e4:	87 bb       	out	0x17, r24	; 23
+
+	//set b3 and b4 low
+	PORTB &= ~(1<<PORTB3 | 1<<PORTB4);
+ 1e6:	88 b3       	in	r24, 0x18	; 24
+ 1e8:	87 7e       	andi	r24, 0xE7	; 231
+ 1ea:	88 bb       	out	0x18, r24	; 24
+	
+	//set frame variable to all zero
+	clearFrame();
+ 1ec:	22 df       	rcall	.-444    	; 0x32 <clearFrame>
+	
+	pulseVibrationShort();
+ 1ee:	7d df       	rcall	.-262    	; 0xea <pulseVibrationShort>
+ 1f0:	2f ef       	ldi	r18, 0xFF	; 255
+ 1f2:	8d ee       	ldi	r24, 0xED	; 237
+ 1f4:	92 e0       	ldi	r25, 0x02	; 2
+ 1f6:	21 50       	subi	r18, 0x01	; 1
+ 1f8:	80 40       	sbci	r24, 0x00	; 0
+ 1fa:	90 40       	sbci	r25, 0x00	; 0
+ 1fc:	e1 f7       	brne	.-8      	; 0x1f6 <main+0x16>
+ 1fe:	00 c0       	rjmp	.+0      	; 0x200 <main+0x20>
+ 200:	00 00       	nop
+	_delay_ms(100);
+	pulseVibrationShort();
+ 202:	73 df       	rcall	.-282    	; 0xea <pulseVibrationShort>
+	
+	playStartAnimation();
+ 204:	23 df       	rcall	.-442    	; 0x4c <playStartAnimation>
+	
+	pulseVibration();
+ 206:	65 df       	rcall	.-310    	; 0xd2 <pulseVibration>
+ 208:	2f ef       	ldi	r18, 0xFF	; 255
+ 20a:	8b ed       	ldi	r24, 0xDB	; 219
+ 20c:	95 e0       	ldi	r25, 0x05	; 5
+ 20e:	21 50       	subi	r18, 0x01	; 1
+ 210:	80 40       	sbci	r24, 0x00	; 0
+ 212:	90 40       	sbci	r25, 0x00	; 0
+ 214:	e1 f7       	brne	.-8      	; 0x20e <main+0x2e>
+ 216:	00 c0       	rjmp	.+0      	; 0x218 <main+0x38>
+ 218:	00 00       	nop
+	_delay_ms(200);
+	pulseVibration();
+ 21a:	5b df       	rcall	.-330    	; 0xd2 <pulseVibration>
+ 21c:	2f ef       	ldi	r18, 0xFF	; 255
+ 21e:	85 ea       	ldi	r24, 0xA5	; 165
+ 220:	9e e0       	ldi	r25, 0x0E	; 14
+ 222:	21 50       	subi	r18, 0x01	; 1
+ 224:	80 40       	sbci	r24, 0x00	; 0
+ 226:	90 40       	sbci	r25, 0x00	; 0
+ 228:	e1 f7       	brne	.-8      	; 0x222 <main+0x42>
+ 22a:	00 c0       	rjmp	.+0      	; 0x22c <main+0x4c>
+ 22c:	00 00       	nop
+	
+	_delay_ms(500);
+	
+	turnOff();
+ 22e:	69 df       	rcall	.-302    	; 0x102 <turnOff>
+	
+	
+	while(1) flashWarning();
+ 230:	74 df       	rcall	.-280    	; 0x11a <flashWarning>
+ 232:	fe cf       	rjmp	.-4      	; 0x230 <main+0x50>
+
+00000234 <__mulhi3>:
+ 234:	00 24       	eor	r0, r0
+ 236:	55 27       	eor	r21, r21
+ 238:	04 c0       	rjmp	.+8      	; 0x242 <__mulhi3+0xe>
+ 23a:	08 0e       	add	r0, r24
+ 23c:	59 1f       	adc	r21, r25
+ 23e:	88 0f       	add	r24, r24
+ 240:	99 1f       	adc	r25, r25
+ 242:	00 97       	sbiw	r24, 0x00	; 0
+ 244:	29 f0       	breq	.+10     	; 0x250 <__mulhi3+0x1c>
+ 246:	76 95       	lsr	r23
+ 248:	67 95       	ror	r22
+ 24a:	b8 f3       	brcs	.-18     	; 0x23a <__mulhi3+0x6>
+ 24c:	71 05       	cpc	r23, r1
+ 24e:	b9 f7       	brne	.-18     	; 0x23e <__mulhi3+0xa>
+ 250:	80 2d       	mov	r24, r0
+ 252:	95 2f       	mov	r25, r21
+ 254:	08 95       	ret
+
+00000256 <_exit>:
+ 256:	f8 94       	cli
+
+00000258 <__stop_program>:
+ 258:	ff cf       	rjmp	.-2      	; 0x258 <__stop_program>
